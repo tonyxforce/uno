@@ -11,16 +11,32 @@
 
 #include "SoftwareSerial.h"
 
-static const uint8_t outSerialTx = D1;
-static const uint8_t outSerialRx = D2;
+#ifdef _usesESP
+
+static const uint8_t outSerialTx  = D1;
+static const uint8_t outSerialRx  = D2;
+static const uint8_t inSerialTx   = D4;
+static const uint8_t inSerialRx   = D5;
+static const uint8_t PIN_MP3_TX   = D7;
+static const uint8_t PIN_MP3_RX   = D6;
+
+#else
+
+#ifdef ARDU
+static const uint8_t outSerialTx = 2;
+static const uint8_t outSerialRx = 3;
+static const uint8_t inSerialTx  = 4;
+static const uint8_t inSerialRx  = 5;
+static const uint8_t PIN_MP3_TX  = 7;
+static const uint8_t PIN_MP3_RX  = 6;
+#endif
+
+#endif
+
 SoftwareSerial outSerial(outSerialRx, outSerialTx);
 
-static const uint8_t inSerialTx = D4;
-static const uint8_t inSerialRx = D5;
 SoftwareSerial inSerial(inSerialRx, inSerialTx);
 
-static const uint8_t PIN_MP3_TX = D7;
-static const uint8_t PIN_MP3_RX = D6;
 SoftwareSerial dfpSerial(PIN_MP3_RX, PIN_MP3_TX);
 
 DFRobotDFPlayerMini player;
