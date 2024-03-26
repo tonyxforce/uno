@@ -2,12 +2,12 @@
 
 #include "DFRobotDFPlayerMini.h"
 
-#define TURNON 1
-#define PAIR 2
-#define CONNECT 3
-#define TURNOFF 4
-#define DISCONNECT 5
-#define MAXVOL 6
+#define TURNON 1    //jo
+#define PAIR 2      //jo
+#define CONNECT 3   //jo
+#define TURNOFF 5   //off
+#define DISCONNECT 6//nema
+#define MAXVOL 4    //max
 
 #include "SoftwareSerial.h"
 
@@ -32,7 +32,7 @@ DFRobotDFPlayerMini player;
 const int numArrays = 15;
 const int numElements = 14;
 
-String generateArrayString(int index)
+/* String generateArrayString(int index)
 {
 	String arrayString = "{\"seg\":{\"0\":{\"col\":[";
 
@@ -55,9 +55,9 @@ String generateArrayString(int index)
 	arrayString += "}]}}";
 
 	return arrayString;
-}
+} */
 
-void generateAndPrintArrays()
+/* void generateAndPrintArrays()
 {
 	for (int i = 0; i < numArrays; i++)
 	{
@@ -65,7 +65,7 @@ void generateAndPrintArrays()
 		outSerial.println(arrayString);
 		delay(200);
 	}
-}
+} */
 
 void dfPlay(int id)
 {
@@ -125,17 +125,19 @@ void setup()
 		pinMode(initOKpin, OUTPUT);
 		digitalWrite(initOKpin, HIGH);
 
-		/* 		for (int i = 0; i < 15; i++)
-				{
-					outSerial.println(on[i]);
-					delay(100);
-				} */
-		generateAndPrintArrays();
+		outSerial.println("{\"ps\": 3}");
 		while (!digitalRead(D0))
 		{
 			yield();
 		}
 		myDFPlayer.disableDAC();
+
+		//dfPlay(TURNON);
+		//dfPlay(PAIR);
+		//dfPlay(CONNECT);
+		//dfPlay(TURNOFF);
+		//dfPlay(DISCONNECT);
+		//dfPlay(MAXVOL);
 
 		Serial.println("dfplayer OK");
 	}
@@ -187,7 +189,7 @@ void loop()
 					Serial.println("Done playing!");
 					break;
 
-				case '2':						// echo
+				case '2':											// echo
 					inSerial.println(inString); // //TODO replace serial name
 					break;
 
@@ -198,9 +200,9 @@ void loop()
 				case '4': // connecting...
 					if (!isConnected && beforeFirstConnect)
 					{
-						beforeFirstConnect = false;
-						isConnected = true;
-						dfPlay(CONNECT);
+						// beforeFirstConnect = false;
+						// isConnected = true;
+						// dfPlay(CONNECT);
 					}
 					break;
 
@@ -238,12 +240,19 @@ void loop()
 					if (isConnected)
 					{
 						isConnected = false;
-						dfPlay(DISCONNECT);
+						// dfPlay(DISCONNECT);
 					}
 					break;
 				case 'a': // turnoff
-					dfPlay(DISCONNECT);
+					outSerial.println("{\"ps\": 4}");
+					dfPlay(TURNOFF);
 					inSerial.println("ok");
+					break;
+
+				case 'b': // pairing
+					dfPlay(PAIR);
+					outSerial.println("{\"ps\": 2}");
+					break;
 				}
 				inString = "";
 				while (inSerial.available() > 0)
