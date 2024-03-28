@@ -124,8 +124,10 @@ void setup()
 		delay(100);
 		pinMode(initOKpin, OUTPUT);
 		digitalWrite(initOKpin, HIGH);
-
+		
+		delay(100);
 		outSerial.println("{\"ps\": 3}");
+		delay(100);
 		while (!digitalRead(D0))
 		{
 			yield();
